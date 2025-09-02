@@ -2,8 +2,8 @@
 A social web app to share images and post comments.
 
 ## Dependencies
-PHP v8.2 or higher
-Database: MongoDB server or [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database)
+PHP v8.2 or higher\
+Database: MongoDB server or [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database)\
 Node.js v18.19.0 or higher
 
 ## Contributing

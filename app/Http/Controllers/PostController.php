@@ -14,19 +14,32 @@ class PostController extends Controller
         $this->middleware('auth');
     }
     
+    /**
+     * Show most recent post and display the post view
+     * 
+     * @return View
+     */
     public function index(): View
     {
         $posts = Post::with('user')->latest()->get();
         return view('posts.index', compact('posts'));
     }
 
+    /**
+     * Display the post create view
+     * 
+     * @return View
+     */
     public function create(): View
     {
         return view('posts.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store new Post and redirect
+     * 
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
@@ -46,7 +59,9 @@ class PostController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a post view
+     * @param Post $post
+     * @return type
      */
     public function show(Post $post)
     {
@@ -54,7 +69,10 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Validates user and displays the edit view
+     * 
+     * @param Post $post
+     * @return type
      */
     public function edit(Post $post)
     {
@@ -64,7 +82,11 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Validates user and updates a Post, then redirect
+     * 
+     * @param Request $request
+     * @param Post $post
+     * @return type
      */
     public function update(Request $request, Post $post)
     {
@@ -80,7 +102,10 @@ class PostController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Validate, destroy one one post and redirect
+     * 
+     * @param Post $post
+     * @return type
      */
     public function destroy(Post $post)
     {
@@ -93,6 +118,10 @@ class PostController extends Controller
         return redirect('/profile/' . auth()->user()->id);
     }
     
+    /**
+     * Validate that user is Authenticated and owns the Post
+     * @param Post $post
+     */
     private function validateUser(Post $post) {
         if (auth()->id() !== $post->user_id) {
             abort(403, "Forbidden");

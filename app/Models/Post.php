@@ -23,17 +23,29 @@ class Post extends Model
         'user_id',
     ];
     
+    /**
+     * Get user associated with one Post
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
     
+    /**
+     * Get all comments associated with one Post
+     * @return HasMany
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
     
-       public function likes(): HasMany
+    /**
+     * Get all likes associated with one Post
+     * @return HasMany
+     */
+    public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }

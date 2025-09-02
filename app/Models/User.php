@@ -5,11 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MongoDB\Laravel\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
     
     protected $connection = 'mongodb';
     protected $table = 'users';
@@ -51,18 +52,38 @@ class User extends Authenticatable
         ];
     }
     
+    /**
+     * Get user posts
+     * @return HasMany
+     */
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
     }
     
+    /**
+     * Get user post likes
+     * @return HasMany
+     */
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }
     
+    /**
+     * Get user post comments
+     * @return HasMany
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+    
+    /**
+    * Create a new factory instance for the model.
+    */
+    protected static function newFactory()
+    {
+        return \Database\Factories\UserFactory::new();
     }
 }

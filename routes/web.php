@@ -11,7 +11,7 @@ Route::get('/', [PostController::class, 'index'])
     ->middleware('auth')
     ->name('home');
 
-Route::get('home', function () {
+Route::get('/home', function () {
     return redirect('/');
 })->name('home');
 
@@ -19,7 +19,7 @@ Auth::routes();
 
 // Posts routes
 Route::group(['prefix' => 'posts'], function () {
-    $controller = App\Http\Controllers\PostController::class;
+    $controller = PostController::class;
     Route::get('',               [$controller,'index'])  ->name('posts.index');
     Route::post('/',             [$controller,'store'])  ->name('posts.store');
     Route::get('/create',        [$controller,'create']) ->name('posts.create');
@@ -31,16 +31,16 @@ Route::group(['prefix' => 'posts'], function () {
 
 // Profile routes
 Route::group(['prefix' => 'profile'], function () {
-    $controller = App\Http\Controllers\ProfileController::class;
+    $controller = ProfileController::class;
     Route::get('/{user}',      [$controller,'index'])  ->name('profile.show');
     Route::get('/{user}/edit', [$controller,'edit'])   ->name('profile.edit');
     Route::patch('/{user}',    [$controller,'update']) ->name('profile.update');
 });
 
 // Comment routes
-Route::post('/posts/{post}/comments',[App\Http\Controllers\CommentController::class,'store'])  ->name('comments.store');
-Route::delete('/comments/{comment}', [App\Http\Controllers\CommentController::class,'destroy'])->name('comments.destroy');
+Route::post('/posts/{post}/comments',[CommentController::class,'store'])  ->name('comments.store');
+Route::delete('/comments/{comment}', [CommentController::class,'destroy'])->name('comments.destroy');
 
 // Like routes
-Route::post('/posts/{post}/likes',   [App\Http\Controllers\LikeController::class,'store'])  ->name('likes.store');
-Route::delete('/posts/{post}/likes', [App\Http\Controllers\LikeController::class,'destroy'])->name('likes.destroy');
+Route::post('/posts/{post}/likes',   [LikeController::class,'store'])  ->name('likes.store');
+Route::delete('/posts/{post}/likes', [LikeController::class,'destroy'])->name('likes.destroy');

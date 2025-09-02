@@ -9,11 +9,23 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {    
+    /**
+     * Displays the profile view
+     * 
+     * @param User $user
+     * @return View
+     */
     public function index(User $user): View
     {
         return view('profiles.index', compact('user'));
     }
 
+    /**
+     * Validates user and displays the profile edit view
+     * 
+     * @param User $user
+     * @return View
+     */
     public function edit(User $user): View
     {
         $this->validateUser($user);
@@ -22,7 +34,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Validates user, updates profile and redirects
+     * 
+     * @param Request $request
+     * @param User $user
+     * @return type
      */
     public function update(Request $request, User $user)
     {
@@ -51,6 +67,10 @@ class ProfileController extends Controller
         return redirect("/profile/{$user->id}");
     }
     
+     /**
+     * Validate that user is Authenticated and owns the Profile
+     * @param User $user
+     */
     private function validateUser(User $user) {
         if (auth()->id() !== $user->id) {
             abort(403, "Forbidden");

@@ -20,11 +20,19 @@ class Like extends Model
         'post_id'
     ];
     
+    /**
+     * Get user associated with one Like
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+     /**
+     * Get post associated with one Like
+     * @return BelongsTo
+     */
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);

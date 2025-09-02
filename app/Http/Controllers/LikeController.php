@@ -12,6 +12,12 @@ class LikeController extends Controller
         $this->middleware('auth');
     }
     
+    /**
+     * Store new like and return to previous view
+     * 
+     * @param Post $post
+     * @return RedirectResponse
+     */
     public function store(Post $post): RedirectResponse
     {
         $post->likes()->create([
@@ -21,6 +27,12 @@ class LikeController extends Controller
         return back();
     }
     
+    /**
+     * DEstroy new like and return to previous view
+     * 
+     * @param Post $post
+     * @return RedirectResponse
+     */
     public function destroy(Post $post): RedirectResponse
     {
         $post->likes()->create([
@@ -30,6 +42,10 @@ class LikeController extends Controller
         return back();
     }
     
+     /**
+     * Validate that user is Authenticated and owns the Post
+     * @param Comment $comment
+     */
     private function validateUser(Comment $comment) {
         if (auth()->id() !== $comment->user_id && auth()->id() !== $comment->post->user_id) {
             abort(403, "Forbidden");

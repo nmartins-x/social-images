@@ -13,6 +13,13 @@ class CommentController extends Controller
         $this->middleware('auth');
     }
     
+    /**
+     * Store new comment and redirect
+     * 
+     * @param Request $request
+     * @param Post $post
+     * @return RedirectResponse
+     */
     public function store(Request $request, Post $post): RedirectResponse
     {
         $data = $request->validate([
@@ -27,6 +34,12 @@ class CommentController extends Controller
         return redirect('/posts/' . $post->id);
     }
     
+    /**
+     * Destroy new comment and redirect
+     * 
+     * @param Comment $comment
+     * @return RedirectResponse
+     */
     public function destroy(Comment $comment): RedirectResponse
     {
         $this->validateUser($comment);
@@ -37,6 +50,10 @@ class CommentController extends Controller
         return redirect('/posts/' . $postId);
     }
     
+    /**
+     * Validate that user is Authenticated and owns the Post
+     * @param Comment $comment
+     */
     private function validateUser(Comment $comment) {
         if (auth()->id() !== $comment->user_id && auth()->id() !== $comment->post->user_id) {
             abort(403, "Forbidden");

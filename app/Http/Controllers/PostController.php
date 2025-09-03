@@ -48,8 +48,8 @@ class PostController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
         
-        $imagePath = $request->file('image',)->store('uploads', 'public');
-        
+        $imagePath = $request->file('image')->store('uploads', 'public');
+
         auth()->user()->posts()->create([
            'caption' => $data['caption'],
            'image_path' => $imagePath
@@ -78,7 +78,7 @@ class PostController extends Controller
     {
         $this->validateUser($post);
         
-        return view('posts.edit'. compact('post'));
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -98,7 +98,7 @@ class PostController extends Controller
         
         $post->update($data);
         
-        return redirect('/posts' . $post->id);
+        return redirect('/posts/' . $post->id);
     }
 
     /**

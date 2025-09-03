@@ -7,8 +7,9 @@ use App\Models\User;
 
 abstract class TestCase extends BaseTestCase
 {
-    function authUser() {
-        $user = User::factory()->create();
-        return $this->actingAs($user);
+    function authUser($user = null) {
+        return $this->actingAs(
+            is_null($user) ? User::factory()->create() : $user
+        );
     }
 }

@@ -5,9 +5,12 @@ namespace App\Models;
 use MongoDB\Laravel\Eloquent\Model;
 use MongoDB\Laravel\Relations\HasMany;
 use MongoDB\Laravel\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
+    use HasFactory;
+    
     protected $connection = 'mongodb';
     protected $table = 'posts';
 
@@ -48,5 +51,13 @@ class Post extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+    
+    /**
+    * Create a new factory instance for the model.
+    */
+    protected static function newFactory()
+    {
+        return \Database\Factories\PostFactory::new();
     }
 }

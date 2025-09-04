@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
-use \Tests\RefreshDatabase;
+use Tests\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Like;
 
 /**
  * Tests access to Posts routes
@@ -47,6 +48,19 @@ class PostTest extends TestCase
         $response->assertViewIs('posts.create');
     }
     
+    public function test_go_to_posts_edit_then_show_edit_view(): void
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()
+            ->withUserId($user->id)
+            ->create();
+        
+        $response = $this->authUser($user)
+                    ->get($this->postsRoute . "/$post->id" . "/edit");
+        
+        $response->assertViewIs('posts.edit');
+    }
+    
     public function test_store_post_then_store_and_redirect_to_profile(): void
     {
         Storage::fake('public');
@@ -81,9 +95,76 @@ class PostTest extends TestCase
 
         $response = $this
                 ->authUser($user)
-                ->patch($this->postsRoute . "/$post->id", ["caption" => "dsds"]);
-        var_dump($response->getContent());
+                ->patch($this->postsRoute . "/$post->id", 
+                    ["caption" => "updated caption"]
+                );
+        
+        $this->assertDatabaseHas('posts', [
+            'caption' => "updated caption",
+            'image_path' => $post->image_path,
+            'user_id' => $user->id
+         ]);
 
         $response->assertRedirectToRoute('posts.show', $post);
+    }
+    
+    public function test_go_to_post_delete_then_delete_and_redirect_to_profile(): void
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()
+                ->withUserId($user->id)
+                ->create();
+                
+        $response = $this
+                    ->authUser($user)
+                    ->delete($this->postsRoute . "/$post->id");
+        
+        $this->assertDatabaseMissing('posts', [
+            'caption' => $post->caption,
+            'image_path' => $post->image_path,
+            'user_id' => $user->id
+        ]);
+
+        $response->assertRedirectToRoute('profile.show', $user->id);
+    }
+    
+    public function test_go_to_post_delete_then_delete_all_likes(): void
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()
+                ->withUserId($user->id)
+                ->create();
+       
+        $like = Like::factory()
+                ->withPostIdAndUserId($post->id, $user->id)
+                ->create();
+     
+        $this->assertDatabaseHas('likes', [
+            'post_id' => $post->id,
+            'user_id' => $user->id
+         ]);
+        
+        $newUser = User::factory()->create();
+        $like = Like::factory()
+                ->withPostIdAndUserId($post->id, $newUser->id)
+                ->create();
+     
+        $this->assertDatabaseHas('likes', [
+            'post_id' => $post->id,
+            'user_id' => $newUser->id
+         ]);
+                
+        $response = $this
+                ->authUser($user)
+                ->delete($this->postsRoute . "/$post->id");
+        
+        $this->assertDatabaseMissing('likes', [
+            'post_id' => $post->id,
+            'user_id' => $user->id
+        ]);
+        $this->assertDatabaseMissing('likes', [
+            'post_id' => $post->id,
+            'user_id' => $newUser->id
+        ]);
     }
 }

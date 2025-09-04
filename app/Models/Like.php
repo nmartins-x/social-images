@@ -4,9 +4,12 @@ namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
 use MongoDB\Laravel\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Like extends Model
 {
+    use HasFactory;
+    
     protected $connection = 'mongodb';
     protected $table = 'likes';
 
@@ -36,5 +39,13 @@ class Like extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+    
+    /**
+    * Create a new factory instance for the model.
+    */
+    protected static function newFactory()
+    {
+        return \Database\Factories\LikeFactory::new();
     }
 }

@@ -113,6 +113,8 @@ class PostController extends Controller
         
         Storage::disk('public')->delete($post->image_path);
         
+        $post->likes()->delete();
+        $post->comments()->delete();
         $post->delete();
         
         return redirect('/profile/' . auth()->user()->id);

@@ -3,16 +3,17 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Post;
+use App\Models\Like;
+
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Like>
  */
-class PostFactory extends Factory
+class LikeFactory extends Factory
 {
-    protected $model = Post::class;
+    protected $model = Like::class;
     
-    /**
+   /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -21,16 +22,16 @@ class PostFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory()->create()->id,
-            'caption' => fake()->name,
-            'image_path' => fake()->imageUrl,
+            'post_id' => \App\Models\Post::factory()->create()->id,
             'updated_at' => fake()->dateTime,
             'created_at' => fake()->dateTime,
         ];
     }
     
-    public function withUserId(String $userId)
+    public function withPostIdAndUserId(String $postId, String $userId)
     {
         return $this->state([
+            'post_id' => $postId,
             'user_id' => $userId,
         ]);
     }

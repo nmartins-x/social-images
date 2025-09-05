@@ -133,8 +133,8 @@ class PostTest extends TestCase
         $user = User::factory()->create();
         $post = Post::factory()
                 ->withUserId($user->id)
-                ->create();
-       
+                ->create();    
+        // Auth user Like
         $like = Like::factory()
                 ->withPostIdAndUserId($post->id, $user->id)
                 ->create();
@@ -145,6 +145,7 @@ class PostTest extends TestCase
          ]);
         
         $newUser = User::factory()->create();
+        // Non-auth user Like
         $like = Like::factory()
                 ->withPostIdAndUserId($post->id, $newUser->id)
                 ->create();
@@ -157,6 +158,7 @@ class PostTest extends TestCase
         $response = $this
                 ->authUser($user)
                 ->delete($this->postsRoute . "/$post->id");
+        $response->assertRedirectToRoute('profile.show', $user->id);
         
         $this->assertDatabaseMissing('likes', [
             'post_id' => $post->id,

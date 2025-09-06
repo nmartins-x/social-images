@@ -1,5 +1,5 @@
 # Social Images app
-A social web app to share images and post comments.
+A social web app, built in Laravel, to share images and post comments/likes.
 
 ## Dependencies
 PHP v8.2 or higher\

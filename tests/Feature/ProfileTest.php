@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
+use App\Http\Routes;
 
 class ProfileTest extends TestCase
 {
@@ -41,6 +42,6 @@ class ProfileTest extends TestCase
         
         $this->assertDatabaseHas('users', $newData);
 
-        $response->assertRedirectToRoute('profile.show', $user);
+        $response->assertRedirectToRoute(Routes::PROFILE_SHOW, $user);
     }
 }

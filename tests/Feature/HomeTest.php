@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Http\Routes;
 
 /**
  * Tests access to Home routes
@@ -14,7 +15,7 @@ class HomeTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(302);
-        $response->assertRedirectToRoute('login');
+        $response->assertRedirectToRoute(Routes::LOGIN);
     }
     
     public function test_go_to_home_with_auth_user_then_success(): void
@@ -22,6 +23,6 @@ class HomeTest extends TestCase
         $response = $this->authUser()->get('/');
         
         $response->assertStatus(200);
-        $response->assertViewIs('posts.index');
+        $response->assertViewIs(Routes::POSTS_INDEX);
     }
 }

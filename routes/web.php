@@ -6,41 +6,45 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
+use App\Http\Routes;
 
+// Root page shows posts if authenticated
 Route::get('/', [PostController::class, 'index'])
     ->middleware('auth')
-    ->name('home');
+    ->name(Routes::HOME);
 
 Route::get('/home', function () {
     return redirect('/');
-})->name('home');
+})->name(Routes::HOME);
 
 Auth::routes();
 
 // Posts routes
-Route::group(['prefix' => 'posts'], function () {
-    $controller = PostController::class;
-    Route::get('',               [$controller,'index'])  ->name('posts.index');
-    Route::post('/',             [$controller,'store'])  ->name('posts.store');
-    Route::get('/create',        [$controller,'create']) ->name('posts.create');
-    Route::get('/{post}',        [$controller,'show'])   ->name('posts.show');
-    Route::get('/{post}/edit',   [$controller,'edit'])   ->name('posts.edit');
-    Route::patch('/{post}',      [$controller,'update']) ->name('posts.update');
-    Route::delete('/{post}',     [$controller,'destroy'])->name('posts.destroy');
+Route::controller(PostController::class)
+        ->prefix('posts')
+        ->group(function () {
+            Route::get('',             'index')   ->name(Routes::POSTS_INDEX);
+            Route::post('/',           'store')   ->name(Routes::POSTS_STORE);
+            Route::get('/create',      'create')  ->name(Routes::POSTS_CREATE);
+            Route::get('/{post}',      'show')    ->name(Routes::POSTS_SHOW);
+            Route::get('/{post}/edit', 'edit')    ->name(Routes::POSTS_EDIT);
+            Route::patch('/{post}',    'update')  ->name(Routes::POSTS_UPDATE);
+            Route::delete('/{post}',   'destroy') ->name(Routes::POSTS_DESTROY);
 });
 
 // Profile routes
-Route::group(['prefix' => 'profile'], function () {
-    $controller = ProfileController::class;
-    Route::get('/{user}',      [$controller,'index'])  ->name('profile.show');
-    Route::get('/{user}/edit', [$controller,'edit'])   ->name('profile.edit');
-    Route::patch('/{user}',    [$controller,'update']) ->name('profile.update');
+Route::controller(ProfileController::class)
+        ->prefix('profile')
+        ->group(function () {
+            Route::get('/{user}',      'index')  ->name(Routes::PROFILE_SHOW);
+            Route::get('/{user}/edit', 'edit')   ->name(Routes::PROFILE_EDIT);
+            Route::patch('/{user}',    'update') ->name(Routes::PROFILE_UPDATE);
 });
 
 // Comment routes
-Route::post('/posts/{post}/comments',[CommentController::class,'store'])  ->name('comments.store');
-Route::delete('/comments/{comment}', [CommentController::class,'destroy'])->name('comments.destroy');
+Route::post('/posts/{post}/comments',[CommentController::class,'store'])  ->name(Routes::COMMENTS_STORE);
+Route::delete('/comments/{comment}', [CommentController::class,'destroy'])->name(Routes::COMMENTS_DESTROY);
 
 // Like routes
-Route::post('/posts/{post}/likes',   [LikeController::class,'store'])  ->name('likes.store');
-Route::delete('/posts/{post}/likes', [LikeController::class,'destroy'])->name('likes.destroy');
+Route::post('/posts/{post}/likes',   [LikeController::class,'store'])  ->name(Routes::LIKES_STORE);
+Route::delete('/posts/{post}/likes', [LikeController::class,'destroy'])->name(Routes::LIKES_DESTROY);

@@ -10,6 +10,7 @@ use Illuminate\Http\UploadedFile;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Like;
+use App\Http\Routes;
 
 /**
  * Tests access to Posts routes
@@ -22,16 +23,16 @@ class PostTest extends TestCase
     public function test_go_to_routes_with_unauthorized_user_then_redirect_to_login(): void
     {
         $indexResponse = $this->get($this->postsRoute);
-        $indexResponse->assertRedirectToRoute('login');
+        $indexResponse->assertRedirectToRoute(Routes::LOGIN);
         
         $createResponse = $this->get($this->postsRoute . '/create');
-        $createResponse->assertRedirectToRoute('login');
+        $createResponse->assertRedirectToRoute(Routes::LOGIN);
         
         $showResponse = $this->get($this->postsRoute . '/1234');
-        $showResponse->assertRedirectToRoute('login');
+        $showResponse->assertRedirectToRoute(Routes::LOGIN);
         
         $editResponse = $this->get($this->postsRoute . '/1234/edit');
-        $editResponse->assertRedirectToRoute('login');
+        $editResponse->assertRedirectToRoute(Routes::LOGIN);
     }
     
     public function test_go_to_posts_index_then_show_index_view(): void
@@ -74,7 +75,7 @@ class PostTest extends TestCase
             'image' => $file
         ]);
 
-        $response->assertRedirectToRoute('profile.show', Auth::id());
+        $response->assertRedirectToRoute(Routes::PROFILE_SHOW, Auth::id());
         
         $filePath = 'uploads/' . $file->hashName();
         Storage::disk('public')->assertExists($filePath);
@@ -105,7 +106,7 @@ class PostTest extends TestCase
             'user_id' => $user->id
          ]);
 
-        $response->assertRedirectToRoute('posts.show', $post);
+        $response->assertRedirectToRoute(Routes::POSTS_SHOW, $post);
     }
     
     public function test_go_to_post_delete_then_delete_and_redirect_to_profile(): void
@@ -125,7 +126,7 @@ class PostTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $response->assertRedirectToRoute('profile.show', $user->id);
+        $response->assertRedirectToRoute(Routes::PROFILE_SHOW, $user->id);
     }
     
     public function test_go_to_post_delete_then_delete_all_likes(): void
@@ -158,7 +159,7 @@ class PostTest extends TestCase
         $response = $this
                 ->authUser($user)
                 ->delete($this->postsRoute . "/$post->id");
-        $response->assertRedirectToRoute('profile.show', $user->id);
+        $response->assertRedirectToRoute(Routes::PROFILE_SHOW, $user->id);
         
         $this->assertDatabaseMissing('likes', [
             'post_id' => $post->id,

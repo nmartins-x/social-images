@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Like;
+use App\Http\Routes;
 
 class LikeTest extends TestCase
 {
@@ -15,10 +16,10 @@ class LikeTest extends TestCase
     public function test_go_to_routes_with_unauthorized_user_then_redirect_to_login(): void
     {
         $storeResponse = $this->post('/posts/1234/likes');
-        $storeResponse->assertRedirectToRoute('login');
+        $storeResponse->assertRedirectToRoute(Routes::LOGIN);
         
         $deleteResponse = $this->delete('/posts/1234/likes');
-        $deleteResponse->assertRedirectToRoute('login');
+        $deleteResponse->assertRedirectToRoute(Routes::LOGIN);
     }
     
     public function test_store_like_then_store_and_redirect_back(): void
